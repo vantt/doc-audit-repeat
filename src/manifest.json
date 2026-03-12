@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "Claude Review Cycle",
+  "version": "2.0.0",
+  "description": "Automate iterative document review/revise cycles on Claude.ai",
+  "permissions": ["storage", "tabs", "scripting"],
+  "host_permissions": ["https://claude.ai/*"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://claude.ai/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": "icon.png"
+  },
+  "icons": {
+    "48": "icon.png",
+    "128": "icon.png"
+  }
+}

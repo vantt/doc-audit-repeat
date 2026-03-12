@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      width: 380px;
+      max-height: 580px;
+      overflow-y: auto;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      font-size: 13px;
+      color: #1c1917;
+      background: #fafaf9;
+    }
+
+    /* Header */
+    .header {
+      padding: 14px 18px;
+      background: #1c1917;
+      color: #fafaf9;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo {
+      width: 28px; height: 28px; border-radius: 8px;
+      background: linear-gradient(135deg, #f59e0b, #ef4444);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px; font-weight: 700; color: #fff;
+    }
+    .header-title { font-size: 14px; font-weight: 600; }
+    .header-sub { font-size: 10px; color: #a8a29e; }
+    .badge {
+      padding: 4px 10px; border-radius: 12px;
+      font-size: 11px; font-weight: 600;
+    }
+    .badge-idle { background: #f5f5f4; color: #78716c; }
+    .badge-running { background: #422006; color: #fbbf24; }
+    .badge-done { background: #052e16; color: #4ade80; }
+    .badge-error { background: #450a0a; color: #fca5a5; }
+    .badge-paused { background: #44403c; color: #d6d3d1; }
+
+    /* Body */
+    .body { padding: 16px 18px; }
+    .section { margin-bottom: 14px; }
+    .label {
+      font-size: 11px; font-weight: 600; color: #78716c;
+      text-transform: uppercase; letter-spacing: 0.04em;
+      margin-bottom: 5px; display: block;
+    }
+
+    textarea, input[type="number"] {
+      width: 100%; padding: 10px 12px; border-radius: 8px;
+      border: 1px solid #d6d3d1; background: #fff;
+      color: #1c1917; font-size: 12px;
+      font-family: inherit; line-height: 1.5;
+      resize: vertical;
+    }
+    textarea:focus, input:focus {
+      outline: none;
+      border-color: #f59e0b;
+      box-shadow: 0 0 0 2px rgba(245,158,11,0.1);
+    }
+    textarea::placeholder { color: #a8a29e; }
+    input[type="number"] { width: 70px; text-align: center; }
+
+    .row { display: flex; gap: 10px; align-items: flex-end; }
+
+    /* Buttons */
+    .btn {
+      padding: 9px 18px; border-radius: 8px; border: none;
+      font-size: 12px; font-weight: 600; cursor: pointer;
+      font-family: inherit; transition: opacity 0.15s;
+    }
+    .btn:hover { opacity: 0.85; }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn-primary { background: #1c1917; color: #fafaf9; }
+    .btn-danger { background: #991b1b; color: #fca5a5; }
+    .btn-secondary { background: #e7e5e4; color: #57534e; }
+    .btn-sm { padding: 5px 10px; font-size: 11px; }
+
+    /* Progress */
+    .progress {
+      display: flex; gap: 3px; height: 5px; margin: 8px 0 12px;
+    }
+    .progress-bar {
+      flex: 1; border-radius: 3px; background: #e7e5e4;
+      transition: background 0.3s;
+    }
+    .progress-bar.done { background: linear-gradient(90deg, #f59e0b, #ef4444); }
+    .progress-bar.active { background: #d6d3d1; animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+    /* Versions */
+    .version {
+      padding: 9px 12px; border-radius: 8px; margin-top: 5px;
+      background: #fff; border: 1px solid #e7e5e4;
+      display: flex; align-items: center; justify-content: space-between;
+      cursor: pointer; transition: background 0.15s;
+    }
+    .version:hover { background: #f5f5f4; }
+    .version-label {
+      font-weight: 600; color: #c2410c; font-size: 12px;
+    }
+    .version-meta {
+      color: #a8a29e; font-size: 10px; margin-left: 8px;
+    }
+
+    /* Log */
+    .log-area {
+      margin-top: 10px; padding: 8px 10px; border-radius: 8px;
+      background: #1c1917; border: 1px solid #292524;
+      max-height: 130px; overflow-y: auto;
+      font-size: 10px; line-height: 1.5;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      color: #78716c;
+    }
+    .log-area .error { color: #fca5a5; }
+    .log-area .info { color: #a8a29e; }
+
+    .hint {
+      font-size: 11px; color: #a8a29e; line-height: 1.5;
+      padding: 10px 12px; background: #f5f5f4; border-radius: 8px;
+      border: 1px solid #e7e5e4;
+    }
+    .hint strong { color: #57534e; }
+
+    .tab-info {
+      display: flex; align-items: center; gap: 6px;
+      padding: 8px 12px; border-radius: 8px;
+      background: #fffbeb; border: 1px solid #fde68a;
+      font-size: 11px; color: #92400e;
+      margin-bottom: 12px;
+    }
+
+    /* Settings toggle */
+    .settings-toggle {
+      background: none; border: none; color: #a8a29e;
+      font-size: 11px; cursor: pointer; padding: 0;
+      font-family: inherit; text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    .settings-panel {
+      margin-top: 8px; padding: 10px 12px; border-radius: 8px;
+      background: #f5f5f4; border: 1px solid #e7e5e4;
+    }
+    .settings-row {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 6px; font-size: 11px; color: #57534e;
+    }
+    .settings-row input {
+      width: 70px; padding: 4px 6px; font-size: 11px;
+      border: 1px solid #d6d3d1; border-radius: 4px;
+    }
+
+    .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="header-left">
+      <div class="logo">↻</div>
+      <div>
+        <div class="header-title">Review Cycle</div>
+        <div class="header-sub">Claude.ai automation</div>
+      </div>
+    </div>
+    <div id="badge" class="badge badge-idle">Idle</div>
+  </div>
+
+  <div class="body">
+    <!-- Tab info -->
+    <div id="tab-info" class="tab-info" style="display:none;">
+      🔗 Tab: <strong id="tab-name"></strong> (ID: <span id="tab-id"></span>)
+    </div>
+
+    <!-- SETUP VIEW -->
+    <div id="view-setup">
+      <div class="section">
+        <label class="label">Prompt Review / Revise</label>
+        <textarea id="prompt" rows="4" placeholder="Ví dụ: Hãy review và cải thiện tài liệu này về logic, tính rõ ràng và khả thi. Trả về bản đã revise hoàn chỉnh."></textarea>
+      </div>
+
+      <div class="row section">
+        <div>
+          <label class="label">Số vòng</label>
+          <input id="rounds" type="number" value="3" min="2" max="15" />
+        </div>
+        <div style="flex:1;"></div>
+        <button id="btn-start" class="btn btn-primary" disabled>▶ Bắt đầu</button>
+      </div>
+
+      <div class="hint">
+        <strong>Cách dùng:</strong><br />
+        1. Mở Claude.ai, gửi query đầu tiên bằng tay<br />
+        2. Đợi Claude trả lời xong<br />
+        3. Mở extension → nhập prompt → nhấn Bắt đầu<br />
+        Extension sẽ lấy response đó làm V1, rồi tự mở chat mới và chạy các vòng tiếp theo trong <strong>cùng tab đó</strong>.
+      </div>
+
+      <div style="margin-top: 10px;">
+        <button id="settings-toggle" class="settings-toggle">⚙ Cài đặt nâng cao</button>
+        <div id="settings-panel" class="settings-panel" style="display:none;">
+          <div class="settings-row">
+            <span>Delay sau navigate (ms)</span>
+            <input id="cfg-nav-delay" type="number" value="4000" />
+          </div>
+          <div class="settings-row">
+            <span>Poll interval (ms)</span>
+            <input id="cfg-poll-interval" type="number" value="2500" />
+          </div>
+          <div class="settings-row">
+            <span>Poll timeout (ms)</span>
+            <input id="cfg-poll-timeout" type="number" value="600000" />
+          </div>
+          <div class="settings-row">
+            <span>Stable checks</span>
+            <input id="cfg-stable" type="number" value="3" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RUNNING VIEW -->
+    <div id="view-running" style="display:none;">
+      <div id="progress" class="progress"></div>
+      <div id="round-info" style="font-size:12px; color:#78716c; margin-bottom:10px;"></div>
+
+      <div class="actions" style="margin-bottom:12px;">
+        <button id="btn-pause" class="btn btn-danger btn-sm" style="display:none;">⏸ Dừng</button>
+        <button id="btn-reset" class="btn btn-secondary btn-sm" style="display:none;">↺ Reset</button>
+        <button id="btn-download" class="btn btn-secondary btn-sm" style="display:none;">↓ Tải tất cả</button>
+      </div>
+
+      <div id="versions"></div>
+      <div id="log" class="log-area" style="display:none;"></div>
+    </div>
+
+    <!-- Debug -->
+    <div style="margin-top: 12px; text-align: right;">
+      <button id="btn-debug" class="settings-toggle">Debug selectors</button>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
